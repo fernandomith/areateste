@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Cadastro de Chamados: registre título, descrição e data de abertura." />
+  <title>Cadastro de Chamados</title>
+
+  <style>
+    /* ==========================================================
+       1. VARIÁVEIS DE DESIGN (cores, espaçamentos, raios)
+       ========================================================== */
+    :root {
+      --cor-fundo: hsl(210, 25%, 96%);
+      --cor-superficie: hsl(0, 0%, 100%);
+      --cor-texto: hsl(215, 28%, 17%);
+      --cor-texto-suave: hsl(215, 14%, 42%);
+      --cor-borda: hsl(214, 20%, 86%);
+      --cor-primaria: hsl(212, 72%, 42%);
+      --cor-primaria-escura: hsl(212, 72%, 34%);
+      --cor-foco: hsla(212, 72%, 42%, 0.18);
+
+      --raio: 10px;
+      --sombra: 0 1px 2px hsla(215, 30%, 20%, 0.06),
+                0 8px 24px hsla(215, 30%, 20%, 0.08);
+
+      /* Fontes do próprio sistema (sem bibliotecas externas) */
+      --fonte: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* ==========================================================
+       2. BASE
+       ========================================================== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--fonte);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--cor-texto);
+      background: var(--cor-fundo);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ==========================================================
+       3. TOPO (título)
+       ========================================================== */
+    .topo {
+      background: var(--cor-superficie);
+      border-bottom: 1px solid var(--cor-borda);
+    }
+
+    .topo-conteudo {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 28px 20px;
+    }
+
+    .topo h1 {
+      margin: 0;
+      font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+    }
+
+    .topo p {
+      margin: 6px 0 0;
+      color: var(--cor-texto-suave);
+    }
+
+    /* ==========================================================
+       4. CARTÃO DO FORMULÁRIO
+       ========================================================== */
+    main {
+      max-width: 640px;
+      margin: 32px auto;
+      padding: 0 20px;
+    }
+
+    .cartao {
+      background: var(--cor-superficie);
+      border: 1px solid var(--cor-borda);
+      border-radius: var(--raio);
+      box-shadow: var(--sombra);
+      padding: 28px;
+    }
+
+    .cartao h2 {
+      margin: 0 0 20px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    /* ==========================================================
+       5. CAMPOS
+       ========================================================== */
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      font: inherit;
+      color: var(--cor-texto);
+      background: var(--cor-superficie);
+      border: 1px solid var(--cor-borda);
+      border-radius: 8px;
+      padding: 11px 14px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: hsl(215, 12%, 62%);
+    }
+
+    input:hover,
+    textarea:hover {
+      border-color: hsl(214, 18%, 72%);
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--cor-primaria);
+      box-shadow: 0 0 0 4px var(--cor-foco);
+    }
+
+    textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    /* ==========================================================
+       6. BOTÃO
+       ========================================================== */
+    .acoes {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 4px;
+    }
+
+    .btn-salvar {
+      font: inherit;
+      font-weight: 600;
+      color: #fff;
+      background: var(--cor-primaria);
+      border: none;
+      border-radius: 8px;
+      padding: 11px 28px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+    }
+
+    .btn-salvar:hover {
+      background: var(--cor-primaria-escura);
+    }
+
+    .btn-salvar:active {
+      transform: translateY(1px);
+    }
+
+    .btn-salvar:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 4px var(--cor-foco);
+    }
+
+    /* ==========================================================
+       7. RESPONSIVIDADE (celular)
+       ========================================================== */
+    @media (max-width: 480px) {
+      .cartao {
+        padding: 20px;
+      }
+
+      .btn-salvar {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOPO: título da aplicação -->
+  <header class="topo">
+    <div class="topo-conteudo">
+      <h1>Cadastro de Chamados</h1>
+      <p>Registre um novo chamado preenchendo os campos abaixo.</p>
+    </div>
+  </header>
+
+  <main>
+    <!-- FORMULÁRIO DE CADASTRO -->
+    <section class="cartao">
+      <h2>Novo chamado</h2>
+
+      <form id="form-chamado">
+        <div class="campo">
+          <label for="titulo">Título</label>
+          <input id="titulo" name="titulo" type="text" placeholder="Ex.: Impressora não liga" />
+        </div>
+
+        <div class="campo">
+          <label for="descricao">Descrição</label>
+          <textarea id="descricao" name="descricao" placeholder="Descreva o problema com o máximo de detalhes possível"></textarea>
+        </div>
+
+        <div class="campo">
+          <label for="data-abertura">Data Abertura</label>
+          <input id="data-abertura" name="dataAbertura" type="date" />
+        </div>
+
+        <div class="acoes">
+          <!-- type="button" para não recarregar a página: por enquanto ele não faz nada -->
+          <button id="btn-salvar" class="btn-salvar" type="button">Salvar</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script>
+    // Por enquanto, nenhuma lógica: o botão "Salvar" será implementado nas próximas etapas.
+  </script>
+</body>
+</html>
