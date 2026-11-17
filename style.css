@@ -1,34 +1,48 @@
 /* ==========================================================================
-   1. VARIÁVEIS DE CORES (Tema Claro por padrão + Tema Escuro)
-   Guardamos as cores em variáveis (--nome) para reaproveitar no arquivo todo.
+   1. SISTEMA DE DESIGN EDITORIAL (Papelaria Tátil & Grade Suíça)
+   Em vez do roxo/azul-escuro clichê de IA, usamos tons reais de papel creme,
+   tinta carvão, terracota queimado e verde-oliva profundo.
    ========================================================================== */
 :root {
-  --cor-fundo: #f8fafc;
-  --cor-cartao: #ffffff;
-  --cor-texto: #0f172a;
-  --cor-texto-suave: #64748b;
-  --cor-borda: #e2e8f0;
-  --cor-primaria: #4f46e5;
-  --cor-primaria-hover: #4338ca;
-  --cor-sucesso: #10b981;
-  --cor-perigo: #ef4444;
-  --sombra: 0 4px 12px rgba(15, 23, 42, 0.05);
+  --cor-mesa: #ebe5d8;           /* Fundo externo (mesa) */
+  --cor-folha: #faf7f0;          /* Folha de papel creme quente */
+  --cor-folha-destaque: #f3efe4; /* Faixa sutil de destaque na pauta */
+  --cor-tinta: #181614;          /* Tinta carvão principal */
+  --cor-tinta-suave: #6e675e;    /* Grafite secundário */
+  --cor-tinta-apagada: #9c9488;  /* Texto riscado / placeholder */
+  --cor-linha: #181614;          /* Linha mestra arquitetônica */
+  --cor-borda: #d6cfc0;          /* Linhas divisórias finas da grade */
+  --cor-pauta: #e2dcd0;          /* Linha pontilhada de cada tarefa */
+  --cor-terracota: #b84a27;      /* Cor de destaque (caneta terracota) */
+  --cor-terracota-hover: #96391b;
+  --cor-oliva: #2d5a3c;          /* Indicador de progresso concluído */
+  --sombra-folha: 0 20px 50px rgba(24, 22, 20, 0.08), 0 1px 3px rgba(24, 22, 20, 0.06);
+
+  /* As 3 vozes tipográficas */
+  --fonte-serifa: "Fraunces", "Georgia", "Times New Roman", serif;
+  --fonte-texto: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --fonte-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
 }
 
-/* Quando o <body> ganha a classe "modo-escuro", só trocamos os valores! */
+/* Modo Noturno Mineral (Grafite quente e Cobre — zero roxo ou azul neon) */
 body.modo-escuro {
-  --cor-fundo: #0f172a;
-  --cor-cartao: #1e293b;
-  --cor-texto: #f1f5f9;
-  --cor-texto-suave: #94a3b8;
-  --cor-borda: #334155;
-  --cor-primaria: #6366f1;
-  --cor-primaria-hover: #818cf8;
-  --sombra: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --cor-mesa: #11100f;
+  --cor-folha: #1a1917;
+  --cor-folha-destaque: #22201d;
+  --cor-tinta: #ede8df;
+  --cor-tinta-suave: #9e9689;
+  --cor-tinta-apagada: #635d53;
+  --cor-linha: #ede8df;
+  --cor-borda: #33302b;
+  --cor-pauta: #292622;
+  --cor-terracota: #d97742;
+  --cor-terracota-hover: #e48b5b;
+  --cor-oliva: #4e8c63;
+  --sombra-folha: 0 24px 60px rgba(0, 0, 0, 0.5);
 }
 
 /* ==========================================================================
-   2. RESET E ESTILO BASE DA PÁGINA
+   2. RESET E ESTRUTURA DA FOLHA ÚNICA (Sem caixas aninhadas)
    ========================================================================== */
 * {
   box-sizing: border-box;
@@ -37,197 +51,297 @@ body.modo-escuro {
 }
 
 body {
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--cor-fundo);
-  color: var(--cor-texto);
+  font-family: var(--fonte-texto);
+  background-color: var(--cor-mesa);
+  color: var(--cor-tinta);
   line-height: 1.5;
-  padding: 32px 16px;
+  padding: 40px 20px;
+  min-height: 100vh;
   transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Centraliza o Planner na tela com largura máxima de 960px */
-.planner-container {
-  max-width: 960px;
+/* Uma única página de caderno editorial estruturada por linhas divisórias */
+.folha-planner {
+  max-width: 1020px;
   margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  background-color: var(--cor-folha);
+  border: 1px solid var(--cor-borda);
+  border-top: 4px solid var(--cor-linha);
+  box-shadow: var(--sombra-folha);
+}
+
+/* Rótulos técnicos em fonte monoespaçada e caixa alta */
+.rotulo-tecnico,
+.indice-periodo,
+.etiqueta-edicao,
+.data-hoje {
+  font-family: var(--fonte-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cor-tinta-suave);
 }
 
 /* ==========================================================================
-   3. CABEÇALHO DO PLANNER
+   3. CABEÇALHO EDITORIAL
    ========================================================================== */
 .planner-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   flex-wrap: wrap;
-  gap: 12px;
-  background-color: var(--cor-cartao);
-  padding: 20px 24px;
-  border-radius: 14px;
-  border: 1px solid var(--cor-borda);
-  box-shadow: var(--sombra);
+  gap: 16px;
+  padding: 28px 36px 24px;
+  border-bottom: 1.5px solid var(--cor-linha);
+}
+
+.metadados-topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
 }
 
 .data-hoje {
-  display: inline-block;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--cor-primaria);
-  margin-bottom: 2px;
+  color: var(--cor-terracota);
+}
+
+.separador {
+  color: var(--cor-tinta-apagada);
 }
 
 .planner-header h1 {
-  font-size: 1.5rem;
-}
-
-.subtitulo {
-  color: var(--cor-texto-suave);
-  font-size: 0.9rem;
+  font-family: var(--fonte-serifa);
+  font-size: 2.35rem;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
 }
 
 .acoes-topo {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  gap: 12px;
 }
 
 /* ==========================================================================
-   4. PAINEL DO TOPO (Foco do Dia + Barra de Progresso)
+   4. FAIXA DE INTENÇÃO DO DIA + MEDIDOR DE PROGRESSO
    ========================================================================== */
 .painel-topo {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: 16px;
+  grid-template-columns: 1.6fr 1fr;
+  border-bottom: 1px solid var(--cor-borda);
 }
 
-.bloco-foco,
+.bloco-foco {
+  padding: 22px 36px;
+  border-right: 1px solid var(--cor-borda);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* O campo de Foco parece escrito diretamente na folha com fonte serifada */
+#foco-dia {
+  width: 100%;
+  border: none;
+  border-bottom: 1px dashed var(--cor-borda);
+  background: transparent;
+  font-family: var(--fonte-serifa);
+  font-style: italic;
+  font-size: 1.2rem;
+  color: var(--cor-tinta);
+  padding: 4px 0 6px;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+#foco-dia::placeholder {
+  color: var(--cor-tinta-apagada);
+  font-weight: 400;
+}
+
+#foco-dia:focus {
+  border-bottom-color: var(--cor-terracota);
+}
+
 .bloco-progresso {
-  background-color: var(--cor-cartao);
-  padding: 18px 20px;
-  border-radius: 14px;
-  border: 1px solid var(--cor-borda);
-  box-shadow: var(--sombra);
+  padding: 22px 36px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 8px;
-}
-
-.bloco-foco label {
-  font-weight: 600;
-  font-size: 0.9rem;
+  gap: 10px;
+  background-color: var(--cor-folha-destaque);
 }
 
 .progresso-cabecalho {
   display: flex;
   justify-content: space-between;
-  font-size: 0.9rem;
+  align-items: baseline;
+}
+
+.contador-mono {
+  font-family: var(--fonte-mono);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--cor-tinta);
 }
 
 .barra-fundo {
   width: 100%;
-  height: 12px;
+  height: 6px;
   background-color: var(--cor-borda);
-  border-radius: 999px;
   overflow: hidden;
 }
 
 .barra-preenchimento {
   width: 0%;
   height: 100%;
-  background-color: var(--cor-sucesso);
-  transition: width 0.3s ease;
+  background-color: var(--cor-terracota);
+  transition: width 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ==========================================================================
-   5. FORMULÁRIO DE NOVA TAREFA E BOTÕES
+   5. BARRA DE ENTRADA DE TAREFA (Integrada à pauta)
    ========================================================================== */
 .nova-tarefa-box {
   display: flex;
-  gap: 10px;
-  background-color: var(--cor-cartao);
-  padding: 16px 20px;
-  border-radius: 14px;
-  border: 1px solid var(--cor-borda);
-  box-shadow: var(--sombra);
+  align-items: center;
+  gap: 12px;
+  padding: 14px 36px;
+  background-color: var(--cor-folha);
+  border-bottom: 1.5px solid var(--cor-linha);
 }
 
-input[type="text"],
-select {
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid var(--cor-borda);
-  background-color: var(--cor-fundo);
-  color: var(--cor-texto);
-  font-size: 0.95rem;
-  outline: none;
-}
-
-input[type="text"]:focus,
-select:focus {
-  border-color: var(--cor-primaria);
+.simbolo-entrada {
+  font-family: var(--fonte-mono);
+  font-size: 1.1rem;
+  color: var(--cor-terracota);
+  font-weight: 600;
+  user-select: none;
 }
 
 #input-tarefa {
   flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--cor-tinta);
+  font-family: var(--fonte-texto);
+  font-size: 0.96rem;
+  padding: 8px 4px;
+  outline: none;
+}
+
+#input-tarefa::placeholder {
+  color: var(--cor-tinta-apagada);
+}
+
+select {
+  font-family: var(--fonte-mono);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 8px 12px;
+  border: 1px solid var(--cor-borda);
+  background-color: var(--cor-folha-destaque);
+  color: var(--cor-tinta);
+  cursor: pointer;
+  outline: none;
+}
+
+select:focus {
+  border-color: var(--cor-tinta);
 }
 
 button {
   cursor: pointer;
+  font-family: var(--fonte-mono);
+  font-size: 0.76rem;
   font-weight: 600;
-  font-size: 0.9rem;
-  padding: 10px 16px;
-  border-radius: 8px;
-  border: none;
-  transition: all 0.2s ease;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: all 0.18s ease;
 }
 
 .btn-primario {
-  background-color: var(--cor-primaria);
-  color: #ffffff;
+  background-color: var(--cor-tinta);
+  color: var(--cor-folha);
+  border: 1px solid var(--cor-tinta);
+  padding: 9px 18px;
 }
 
 .btn-primario:hover {
-  background-color: var(--cor-primaria-hover);
+  background-color: var(--cor-terracota);
+  border-color: var(--cor-terracota);
+  color: #ffffff;
 }
 
-.btn-secundario {
-  background-color: var(--cor-fundo);
-  color: var(--cor-texto);
+.btn-borda {
+  background-color: transparent;
+  color: var(--cor-tinta);
   border: 1px solid var(--cor-borda);
+  padding: 7px 14px;
 }
 
-.btn-secundario:hover {
-  border-color: var(--cor-primaria);
+.btn-borda:hover {
+  border-color: var(--cor-tinta);
+}
+
+.btn-texto {
+  background: transparent;
+  border: none;
+  color: var(--cor-tinta-suave);
+  padding: 7px 10px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.btn-texto:hover {
+  color: var(--cor-terracota);
 }
 
 /* ==========================================================================
-   6. GRADE DOS 3 PERÍODOS (Manhã, Tarde, Noite)
+   6. GRADE ARQUITETÔNICA DOS 3 PERÍODOS (Colunas separadas por fio vertical)
    ========================================================================== */
 .grade-periodos {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  min-height: 400px;
 }
 
 .coluna-periodo {
-  background-color: var(--cor-cartao);
-  padding: 20px;
-  border-radius: 14px;
-  border: 1px solid var(--cor-borda);
-  box-shadow: var(--sombra);
-  min-height: 240px;
+  padding: 26px 30px 36px;
+  border-right: 1px solid var(--cor-borda);
+  display: flex;
+  flex-direction: column;
+}
+
+.coluna-periodo:last-child {
+  border-right: none;
+}
+
+.cabecalho-coluna {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.horario-periodo {
+  font-family: var(--fonte-mono);
+  font-size: 0.7rem;
+  color: var(--cor-tinta-apagada);
 }
 
 .coluna-periodo h2 {
-  font-size: 1.1rem;
-  margin-bottom: 14px;
-  padding-bottom: 10px;
+  font-family: var(--fonte-serifa);
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
   border-bottom: 1px solid var(--cor-borda);
 }
 
@@ -235,51 +349,125 @@ button {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 8px;
 }
 
+/* Cada tarefa é uma linha pautada de caderno, não uma caixa pesada */
 .item-tarefa {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 8px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  background-color: var(--cor-fundo);
-  border: 1px solid var(--cor-borda);
-  font-size: 0.92rem;
+  gap: 10px;
+  padding: 11px 2px;
+  border-bottom: 1px dashed var(--cor-pauta);
+  font-size: 0.93rem;
+  transition: opacity 0.2s ease;
 }
 
 .item-tarefa label {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  align-items: flex-start;
+  gap: 10px;
   cursor: pointer;
   flex: 1;
+  line-height: 1.4;
 }
 
+/* Checkbox editorial quadrado customizado */
+.item-tarefa input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  margin-top: 3px;
+  border: 1.5px solid var(--cor-tinta-suave);
+  background-color: transparent;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.item-tarefa input[type="checkbox"]:hover {
+  border-color: var(--cor-terracota);
+}
+
+.item-tarefa input[type="checkbox"]:checked {
+  background-color: var(--cor-terracota);
+  border-color: var(--cor-terracota);
+}
+
+.item-tarefa input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 3.5px;
+  top: 0.5px;
+  width: 4px;
+  height: 8px;
+  border: solid #ffffff;
+  border-width: 0 1.8px 1.8px 0;
+  transform: rotate(45deg);
+}
+
+/* Quando concluída, riscamos com elegância */
 .item-tarefa.concluida span {
   text-decoration: line-through;
-  color: var(--cor-texto-suave);
+  color: var(--cor-tinta-apagada);
 }
 
 .btn-remover {
   background: transparent;
-  color: var(--cor-texto-suave);
-  padding: 4px 8px;
-  font-size: 0.8rem;
+  border: none;
+  color: var(--cor-tinta-apagada);
+  font-family: var(--fonte-mono);
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  opacity: 0.5;
 }
 
+.item-tarefa:hover .btn-remover,
 .btn-remover:hover {
-  color: var(--cor-perigo);
+  opacity: 1;
+  color: var(--cor-terracota);
 }
 
-@media (max-width: 720px) {
+/* ==========================================================================
+   7. RESPONSIVIDADE (Telas menores e celulares)
+   ========================================================================== */
+@media (max-width: 780px) {
+  body {
+    padding: 12px;
+  }
+
+  .planner-header,
+  .bloco-foco,
+  .bloco-progresso,
+  .nova-tarefa-box,
+  .coluna-periodo {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
   .painel-topo,
   .grade-periodos {
     grid-template-columns: 1fr;
   }
+
+  .bloco-foco {
+    border-right: none;
+    border-bottom: 1px solid var(--cor-borda);
+  }
+
+  .coluna-periodo {
+    border-right: none;
+    border-bottom: 1px solid var(--cor-borda);
+    min-height: auto;
+  }
+
   .nova-tarefa-box {
-    flex-direction: column;
+    flex-wrap: wrap;
+  }
+
+  #input-tarefa {
+    min-width: 100%;
   }
 }

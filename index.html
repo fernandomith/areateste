@@ -3,51 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Planner Diário interativo organizado por períodos do dia (Manhã, Tarde e Noite) com barra de progresso e salvamento automático." />
-  <title>Meu Planner Diário</title>
+  <meta name="description" content="Planner Diário editorial organizado por períodos do dia com barra de progresso e salvamento automático." />
+  <title>Caderno Diário — Planner</title>
+
+  <!-- Fontes Editoriais (Google Fonts): Fraunces (Serifa), Plus Jakarta Sans (Texto) e JetBrains Mono (Técnica) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <!-- Conexão com o arquivo de estilos (CSS) -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Container principal que centraliza o Planner na tela -->
-  <main class="planner-container">
+  <!-- Folha única de agenda aberta sobre a mesa (sem caixas aninhadas desnecessárias) -->
+  <main class="folha-planner">
 
-    <!-- 1. CABEÇALHO: Data de hoje, Título do Planner e botões de ação -->
+    <!-- 1. CABEÇALHO EDITORIAL -->
     <header class="planner-header">
-      <div>
-        <span id="data-hoje" class="data-hoje">Carregando data...</span>
-        <h1>📅 Meu Planner Diário</h1>
-        <p class="subtitulo">Organize sua rotina por períodos do dia</p>
+      <div class="header-esquerda">
+        <div class="metadados-topo">
+          <span class="etiqueta-edicao">EDIÇÃO DIÁRIA // N.º 01</span>
+          <span class="separador">·</span>
+          <span id="data-hoje" class="data-hoje">Carregando data...</span>
+        </div>
+        <h1>Caderno de Rotina</h1>
       </div>
+
       <div class="acoes-topo">
-        <button id="btn-limpar" class="btn-secundario" type="button" title="Remove todas as tarefas já marcadas como concluídas">
-          🧹 Limpar Concluídas
+        <button id="btn-limpar" class="btn-texto" type="button" title="Remove todas as tarefas já marcadas como concluídas">
+          Arquivar concluídas
         </button>
-        <button id="btn-tema" class="btn-secundario" type="button">
-          🌙 Modo Escuro
+        <button id="btn-tema" class="btn-borda" type="button">
+          Modo Noturno
         </button>
       </div>
     </header>
 
-    <!-- 2. FOCO DO DIA E BARRA DE PROGRESSO -->
+    <!-- 2. FAIXA DE INTENÇÃO DO DIA + MEDIDOR DE PROGRESSO -->
     <section class="painel-topo">
-      <!-- Campo para digitar a meta principal do dia -->
       <div class="bloco-foco">
-        <label for="foco-dia">🎯 Foco Principal de Hoje:</label>
+        <label for="foco-dia" class="rotulo-tecnico">00 // PRIORIDADE ESSENCIAL DE HOJE</label>
         <input
           id="foco-dia"
           type="text"
-          placeholder="Ex: Entregar o relatório ou estudar 1h de programação..."
+          placeholder="Escreva a única coisa que fará o dia de hoje valer a pena..."
         />
       </div>
 
-      <!-- Barra que mostra a porcentagem de tarefas concluídas -->
       <div class="bloco-progresso">
         <div class="progresso-cabecalho">
-          <span>Progresso do dia</span>
-          <strong id="texto-progresso">0% (0/0)</strong>
+          <span class="rotulo-tecnico">TAXA DE CONCLUSÃO</span>
+          <strong id="texto-progresso" class="contador-mono">0% (0/0)</strong>
         </div>
         <div class="barra-fundo">
           <div id="barra-preenchimento" class="barra-preenchimento"></div>
@@ -55,42 +62,55 @@
       </div>
     </section>
 
-    <!-- 3. FORMULÁRIO PARA ADICIONAR NOVA TAREFA -->
+    <!-- 3. BARRA DE ENTRADA RÁPIDA (Integrada à pauta da folha) -->
     <section class="nova-tarefa-box">
+      <span class="simbolo-entrada">+</span>
       <input
         id="input-tarefa"
         type="text"
-        placeholder="Digite uma nova tarefa..."
+        placeholder="Registrar nova atividade na pauta..."
       />
 
       <select id="select-periodo" aria-label="Período do dia">
-        <option value="manha">☀️ Manhã</option>
-        <option value="tarde">🌤️ Tarde</option>
-        <option value="noite">🌙 Noite</option>
+        <option value="manha">01 · Manhã</option>
+        <option value="tarde">02 · Tarde</option>
+        <option value="noite">03 · Noite</option>
       </select>
 
       <button id="btn-adicionar" class="btn-primario" type="button">
-        + Adicionar
+        Registrar
       </button>
     </section>
 
-    <!-- 4. COLUNAS DOS PERÍODOS (Manhã, Tarde e Noite) -->
+    <!-- 4. GRADE ARQUITETÔNICA DOS 3 PERÍODOS (Pautas de caderno lado a lado) -->
     <section class="grade-periodos">
-      <!-- Coluna da Manhã -->
+      <!-- Coluna 01: Manhã -->
       <div class="coluna-periodo">
-        <h2>☀️ Manhã</h2>
+        <div class="cabecalho-coluna">
+          <span class="indice-periodo">01 / PERÍODO</span>
+          <span class="horario-periodo">06:00 — 12:00</span>
+        </div>
+        <h2>Manhã</h2>
         <ul id="lista-manha" class="lista-tarefas"></ul>
       </div>
 
-      <!-- Coluna da Tarde -->
+      <!-- Coluna 02: Tarde -->
       <div class="coluna-periodo">
-        <h2>🌤️ Tarde</h2>
+        <div class="cabecalho-coluna">
+          <span class="indice-periodo">02 / PERÍODO</span>
+          <span class="horario-periodo">12:00 — 18:00</span>
+        </div>
+        <h2>Tarde</h2>
         <ul id="lista-tarde" class="lista-tarefas"></ul>
       </div>
 
-      <!-- Coluna da Noite -->
+      <!-- Coluna 03: Noite -->
       <div class="coluna-periodo">
-        <h2>🌙 Noite</h2>
+        <div class="cabecalho-coluna">
+          <span class="indice-periodo">03 / PERÍODO</span>
+          <span class="horario-periodo">18:00 — 23:00</span>
+        </div>
+        <h2>Noite</h2>
         <ul id="lista-noite" class="lista-tarefas"></ul>
       </div>
     </section>

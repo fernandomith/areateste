@@ -77,7 +77,7 @@ function carregarDadosDoStorage() {
   const temaSalvo = localStorage.getItem(CHAVE_TEMA);
   if (temaSalvo === 'escuro') {
     document.body.classList.add('modo-escuro');
-    btnTema.textContent = '☀️ Modo Claro';
+    btnTema.textContent = 'Modo Diurno';
   }
 
   // 2. Carrega o Foco Principal do Dia
@@ -96,9 +96,9 @@ function carregarDadosDoStorage() {
       criarElementoTarefa(tarefa.texto, tarefa.periodo, tarefa.concluida, false);
     });
   } else {
-    criarElementoTarefa('Revisar a estrutura HTML do Planner', 'manha', true, false);
-    criarElementoTarefa('Testar as cores e colunas do CSS', 'tarde', false, false);
-    criarElementoTarefa('Testar se o localStorage salva ao dar F5', 'noite', false, false);
+    criarElementoTarefa('Revisar a pauta da manhã com calma', 'manha', true, false);
+    criarElementoTarefa('Concentrar 1h no bloco de estudo principal', 'tarde', false, false);
+    criarElementoTarefa('Planejar as prioridades do dia seguinte', 'noite', false, false);
     salvarTarefasNoStorage();
   }
 
@@ -203,10 +203,10 @@ btnTema.addEventListener('click', function () {
   const estaNoModoEscuro = document.body.classList.toggle('modo-escuro');
 
   if (estaNoModoEscuro) {
-    btnTema.textContent = '☀️ Modo Claro';
+    btnTema.textContent = 'Modo Diurno';
     localStorage.setItem(CHAVE_TEMA, 'escuro');
   } else {
-    btnTema.textContent = '🌙 Modo Escuro';
+    btnTema.textContent = 'Modo Noturno';
     localStorage.setItem(CHAVE_TEMA, 'claro');
   }
 });
