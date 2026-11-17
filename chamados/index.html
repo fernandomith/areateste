@@ -18,7 +18,16 @@
       --cor-borda: hsl(214, 20%, 86%);
       --cor-primaria: hsl(212, 72%, 42%);
       --cor-primaria-escura: hsl(212, 72%, 34%);
+      --cor-primaria-clara: hsl(212, 80%, 96%);
       --cor-foco: hsla(212, 72%, 42%, 0.18);
+
+      --cor-erro: hsl(4, 66%, 46%);
+      --cor-erro-fundo: hsl(4, 85%, 97%);
+      --cor-erro-borda: hsl(4, 70%, 88%);
+
+      --cor-sucesso-texto: hsl(152, 55%, 24%);
+      --cor-sucesso-fundo: hsl(150, 60%, 96%);
+      --cor-sucesso-borda: hsl(150, 45%, 82%);
 
       --raio: 10px;
       --sombra: 0 1px 2px hsla(215, 30%, 20%, 0.06),
@@ -26,6 +35,9 @@
 
       /* Fontes do próprio sistema (sem bibliotecas externas) */
       --fonte: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+      /* Largura máxima do conteúdo (mais larga para caber a tabela) */
+      --largura: 880px;
     }
 
     /* ==========================================================
@@ -57,9 +69,38 @@
     }
 
     .topo-conteudo {
-      max-width: 640px;
+      max-width: var(--largura);
       margin: 0 auto;
       padding: 28px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px 24px;
+    }
+
+    /* Botão "Novo Chamado" (mesmo visual do botão principal, com um "+") */
+    .btn-novo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .btn-novo .mais {
+      font-size: 1.25rem;
+      line-height: 1;
+      font-weight: 500;
+    }
+
+    /* Formulário aparecendo */
+    .cartao:not([hidden]) {
+      animation: aparecer 0.2s ease;
+    }
+
+    /* Aviso de sucesso fica fora do formulário (que é ocultado após salvar) */
+    #aviso-sucesso {
+      margin-bottom: 24px;
     }
 
     .topo h1 {
@@ -79,7 +120,7 @@
        4. CARTÃO DO FORMULÁRIO
        ========================================================== */
     main {
-      max-width: 640px;
+      max-width: var(--largura);
       margin: 32px auto;
       padding: 0 20px;
     }
@@ -90,6 +131,12 @@
       border-radius: var(--raio);
       box-shadow: var(--sombra);
       padding: 28px;
+      transition: box-shadow 0.2s ease;
+    }
+
+    /* Destaque sutil quando o formulário está em modo de edição */
+    .cartao.editando {
+      box-shadow: 0 0 0 3px var(--cor-foco), var(--sombra);
     }
 
     .cartao h2 {
@@ -149,94 +196,1210 @@
     }
 
     /* ==========================================================
-       6. BOTÃO
+       6. BOTÕES
        ========================================================== */
     .acoes {
       display: flex;
       justify-content: flex-end;
+      gap: 12px;
       padding-top: 4px;
     }
 
-    .btn-salvar {
+    .btn {
       font: inherit;
       font-weight: 600;
-      color: #fff;
-      background: var(--cor-primaria);
-      border: none;
       border-radius: 8px;
       padding: 11px 28px;
       cursor: pointer;
-      transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease,
+                  color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
     }
 
-    .btn-salvar:hover {
-      background: var(--cor-primaria-escura);
-    }
-
-    .btn-salvar:active {
+    .btn:active {
       transform: translateY(1px);
     }
 
-    .btn-salvar:focus-visible {
+    .btn:focus-visible {
       outline: none;
       box-shadow: 0 0 0 4px var(--cor-foco);
     }
 
+    /* Botão principal (Salvar / Atualizar) */
+    .btn-salvar {
+      color: #fff;
+      background: var(--cor-primaria);
+      border: 1px solid var(--cor-primaria);
+    }
+
+    .btn-salvar:hover {
+      background: var(--cor-primaria-escura);
+      border-color: var(--cor-primaria-escura);
+    }
+
+    /* Botão secundário (Cancelar) */
+    .btn-cancelar {
+      color: var(--cor-texto);
+      background: var(--cor-superficie);
+      border: 1px solid var(--cor-borda);
+    }
+
+    .btn-cancelar:hover {
+      background: var(--cor-fundo);
+      border-color: hsl(214, 18%, 72%);
+    }
+
+    /* Botão pequeno usado dentro da tabela (Editar) */
+    .btn-editar {
+      font-size: 0.875rem;
+      padding: 6px 14px;
+      color: var(--cor-primaria);
+      background: var(--cor-superficie);
+      border: 1px solid var(--cor-borda);
+    }
+
+    .btn-editar:hover {
+      background: var(--cor-primaria-clara);
+      border-color: hsl(212, 60%, 80%);
+    }
+
+    /* Botão pequeno usado dentro da tabela (Excluir) */
+    .btn-excluir {
+      font-size: 0.875rem;
+      padding: 6px 14px;
+      color: var(--cor-erro);
+      background: var(--cor-superficie);
+      border: 1px solid var(--cor-borda);
+    }
+
+    .btn-excluir:hover {
+      background: var(--cor-erro-fundo);
+      border-color: var(--cor-erro-borda);
+    }
+
+    /* Botão de confirmação da exclusão (dentro da janela) */
+    .btn-perigo {
+      color: #fff;
+      background: var(--cor-erro);
+      border: 1px solid var(--cor-erro);
+    }
+
+    .btn-perigo:hover {
+      background: hsl(4, 66%, 38%);
+      border-color: hsl(4, 66%, 38%);
+    }
+
+    .btn-perigo:focus-visible {
+      box-shadow: 0 0 0 4px hsla(4, 66%, 46%, 0.2);
+    }
+
     /* ==========================================================
-       7. RESPONSIVIDADE (celular)
+       6.1 MODAL DE CONFIRMAÇÃO (feito à mão: fundo escuro + janela)
        ========================================================== */
-    @media (max-width: 480px) {
+    .modal-fundo {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: hsla(215, 30%, 15%, 0.45);
+      animation: fundo-aparecer 0.15s ease;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 420px;
+      padding: 24px;
+      color: var(--cor-texto);
+      background: var(--cor-superficie);
+      border: 1px solid var(--cor-borda);
+      border-radius: var(--raio);
+      box-shadow: 0 20px 48px hsla(215, 30%, 20%, 0.22);
+      animation: modal-aparecer 0.18s ease;
+    }
+
+    .modal h3 {
+      margin: 0 0 8px;
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .modal p {
+      margin: 0 0 20px;
+      color: var(--cor-texto-suave);
+      overflow-wrap: anywhere;
+    }
+
+    .modal strong {
+      color: var(--cor-texto);
+    }
+
+    .modal .acoes {
+      padding-top: 0;
+    }
+
+    /* Impede a página de rolar por trás enquanto o modal está aberto */
+    body.modal-aberto {
+      overflow: hidden;
+    }
+
+    @keyframes fundo-aparecer {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    @keyframes modal-aparecer {
+      from { opacity: 0; transform: translateY(8px) scale(0.98); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    /* ==========================================================
+       7. AVISOS (erro e sucesso)
+       ========================================================== */
+    .aviso {
+      display: none;
+      margin-bottom: 20px;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      color: hsl(4, 60%, 32%);
+      background: var(--cor-erro-fundo);
+      border: 1px solid var(--cor-erro-borda);
+      border-radius: 8px;
+    }
+
+    .aviso.sucesso {
+      color: var(--cor-sucesso-texto);
+      background: var(--cor-sucesso-fundo);
+      border-color: var(--cor-sucesso-borda);
+    }
+
+    .aviso.visivel {
+      display: block;
+      animation: aparecer 0.2s ease;
+    }
+
+    .msg-erro {
+      display: none;
+      font-size: 0.85rem;
+      color: var(--cor-erro);
+    }
+
+    .campo.com-erro .msg-erro {
+      display: block;
+    }
+
+    .campo.com-erro input,
+    .campo.com-erro textarea {
+      border-color: var(--cor-erro);
+    }
+
+    .campo.com-erro input:focus,
+    .campo.com-erro textarea:focus {
+      box-shadow: 0 0 0 4px hsla(4, 66%, 46%, 0.15);
+    }
+
+    .obrigatorio {
+      color: var(--cor-erro);
+      font-weight: 600;
+    }
+
+    .opcional {
+      font-weight: 400;
+      color: var(--cor-texto-suave);
+    }
+
+    /* ==========================================================
+       8. TABELA DE CHAMADOS
+       ========================================================== */
+    .lista-secao {
+      margin-top: 0;
+    }
+
+    /* O espaço entre formulário e tabela só existe quando o formulário está visível */
+    .cartao {
+      margin-bottom: 32px;
+    }
+
+    .lista-cabecalho {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .lista-cabecalho h2 {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .contador {
+      font-size: 0.9rem;
+      color: var(--cor-texto-suave);
+    }
+
+    .tabela-container {
+      background: var(--cor-superficie);
+      border: 1px solid var(--cor-borda);
+      border-radius: var(--raio);
+      box-shadow: 0 1px 2px hsla(215, 30%, 20%, 0.05);
+      overflow: hidden;
+    }
+
+    .tabela {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+
+    .tabela th,
+    .tabela td {
+      padding: 14px 16px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .tabela thead th {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--cor-texto-suave);
+      background: hsl(210, 25%, 98%);
+      border-bottom: 1px solid var(--cor-borda);
+    }
+
+    .tabela tbody tr + tr td {
+      border-top: 1px solid hsl(214, 20%, 92%);
+    }
+
+    .tabela tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    .tabela tbody tr:hover {
+      background: hsl(210, 25%, 98.5%);
+    }
+
+    /* Linha que está sendo editada no momento */
+    .tabela tbody tr.em-edicao {
+      background: var(--cor-primaria-clara);
+    }
+
+    .col-titulo {
+      font-weight: 600;
+      overflow-wrap: anywhere;
+    }
+
+    .col-descricao {
+      color: var(--cor-texto-suave);
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    .col-data {
+      white-space: nowrap;
+      color: var(--cor-texto-suave);
+    }
+
+    .col-acoes {
+      width: 1%;
+      white-space: nowrap;
+      text-align: right !important;
+    }
+
+    .col-acoes .btn + .btn {
+      margin-left: 8px;
+    }
+
+    /* ==========================================================
+       8.1 ESTADO VAZIO + JOGO DO ESTUDANTE
+       ========================================================== */
+    .estado-vazio {
+      padding: 24px 20px;
+      text-align: center;
+      background: var(--cor-superficie);
+      border: 1px dashed var(--cor-borda);
+      border-radius: var(--raio);
+    }
+
+    .lista-vazia {
+      margin: 0 0 16px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--cor-texto);
+    }
+
+    .jogo-tela {
+      display: block;
+      width: 100%;
+      max-width: 720px;
+      height: auto;
+      margin: 0 auto;
+      background: hsl(210, 30%, 98%);
+      border: 1px solid var(--cor-borda);
+      border-radius: 8px;
+      cursor: pointer;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .jogo-dica {
+      margin: 10px 0 0;
+      font-size: 0.85rem;
+      color: var(--cor-texto-suave);
+    }
+
+    kbd {
+      display: inline-block;
+      padding: 1px 6px;
+      font-family: inherit;
+      font-size: 0.8em;
+      font-weight: 600;
+      color: var(--cor-texto);
+      background: var(--cor-fundo);
+      border: 1px solid var(--cor-borda);
+      border-bottom-width: 2px;
+      border-radius: 4px;
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(-4px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================
+       9. RESPONSIVIDADE (celular)
+       ========================================================== */
+    @media (max-width: 640px) {
       .cartao {
         padding: 20px;
       }
 
-      .btn-salvar {
+      .acoes {
+        flex-direction: column-reverse;
+      }
+
+      .acoes .btn {
         width: 100%;
+      }
+
+      /* Em telas pequenas, cada linha da tabela vira um bloco empilhado */
+      .tabela thead {
+        display: none;
+      }
+
+      .tabela,
+      .tabela tbody,
+      .tabela tr,
+      .tabela td {
+        display: block;
+        width: 100%;
+      }
+
+      .tabela tbody tr {
+        padding: 12px 16px;
+      }
+
+      .tabela tbody tr + tr {
+        border-top: 1px solid hsl(214, 20%, 92%);
+      }
+
+      .tabela tbody tr + tr td {
+        border-top: none;
+      }
+
+      .tabela td {
+        padding: 4px 0;
+      }
+
+      .tabela td[data-rotulo]::before {
+        content: attr(data-rotulo);
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--cor-texto-suave);
+      }
+
+      .col-acoes {
+        text-align: left !important;
+        padding-top: 8px !important;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOPO: título da aplicação -->
+  <!-- TOPO: título da aplicação + botão "Novo Chamado" -->
   <header class="topo">
     <div class="topo-conteudo">
-      <h1>Cadastro de Chamados</h1>
-      <p>Registre um novo chamado preenchendo os campos abaixo.</p>
+      <div>
+        <h1>Cadastro de Chamados</h1>
+        <p>Acompanhe os chamados abertos e registre novos quando precisar.</p>
+      </div>
+      <button id="btn-novo" class="btn btn-salvar btn-novo" type="button" aria-controls="cartao-form">
+        <span class="mais" aria-hidden="true">+</span> Novo Chamado
+      </button>
     </div>
   </header>
 
   <main>
-    <!-- FORMULÁRIO DE CADASTRO -->
-    <section class="cartao">
-      <h2>Novo chamado</h2>
+    <!-- FORMULÁRIO DE CADASTRO / EDIÇÃO (oculto até clicar em "Novo Chamado" ou "Editar") -->
+    <section id="cartao-form" class="cartao" hidden>
+      <h2 id="titulo-form">Novo chamado</h2>
 
-      <form id="form-chamado">
-        <div class="campo">
-          <label for="titulo">Título</label>
-          <input id="titulo" name="titulo" type="text" placeholder="Ex.: Impressora não liga" />
+      <!-- novalidate: usamos nossa própria validação, com mensagens mais amigáveis -->
+      <form id="form-chamado" novalidate>
+        <!-- Aviso de erro de validação -->
+        <div id="aviso" class="aviso" role="alert"></div>
+
+        <div class="campo" id="campo-titulo">
+          <label for="titulo">Título <span class="obrigatorio" aria-hidden="true">*</span></label>
+          <input id="titulo" name="titulo" type="text" placeholder="Ex.: Impressora não liga" aria-describedby="erro-titulo" />
+          <span id="erro-titulo" class="msg-erro">Dê um título curto para o chamado.</span>
         </div>
 
-        <div class="campo">
-          <label for="descricao">Descrição</label>
-          <textarea id="descricao" name="descricao" placeholder="Descreva o problema com o máximo de detalhes possível"></textarea>
+        <div class="campo" id="campo-descricao">
+          <label for="descricao">Descrição <span class="obrigatorio" aria-hidden="true">*</span></label>
+          <textarea id="descricao" name="descricao" placeholder="Descreva o problema com o máximo de detalhes possível" aria-describedby="erro-descricao"></textarea>
+          <span id="erro-descricao" class="msg-erro">Conte um pouco sobre o problema.</span>
         </div>
 
-        <div class="campo">
-          <label for="data-abertura">Data Abertura</label>
-          <input id="data-abertura" name="dataAbertura" type="date" />
-        </div>
+        <!-- A Data Abertura não aparece no formulário: é preenchida automaticamente ao salvar -->
 
         <div class="acoes">
-          <!-- type="button" para não recarregar a página: por enquanto ele não faz nada -->
-          <button id="btn-salvar" class="btn-salvar" type="button">Salvar</button>
+          <!-- Cancelar aparece tanto na inclusão quanto na edição -->
+          <button id="btn-cancelar" class="btn btn-cancelar" type="button">Cancelar</button>
+          <!-- type="submit": funciona ao clicar e também ao apertar Enter -->
+          <button id="btn-salvar" class="btn btn-salvar" type="submit">Salvar</button>
         </div>
       </form>
     </section>
+
+    <!-- Aviso de sucesso (fora do formulário, pois ele é ocultado depois de salvar) -->
+    <div id="aviso-sucesso" class="aviso sucesso" role="status"></div>
+
+    <!-- TABELA DE CHAMADOS CADASTRADOS -->
+    <section class="lista-secao" aria-labelledby="titulo-lista">
+      <div class="lista-cabecalho">
+        <h2 id="titulo-lista">Chamados cadastrados</h2>
+        <span id="contador" class="contador">0 chamados</span>
+      </div>
+
+      <!-- Quando não há nenhum chamado: mensagem + jogo do estudante -->
+      <div id="estado-vazio" class="estado-vazio">
+        <p id="lista-vazia" class="lista-vazia">
+          Eba! nenhum chamado para atender por enquanto, Vamos nos divertir
+        </p>
+
+        <canvas
+          id="jogo"
+          class="jogo-tela"
+          width="720"
+          height="200"
+          aria-label="Jogo do estudante: pule sobre os livros e as provas"
+        ></canvas>
+
+        <p class="jogo-dica">
+          Aperte <kbd>Espaço</kbd>, <kbd>↑</kbd> ou clique no jogo para pular os <strong>livros</strong> e as <strong>provas</strong>.
+        </p>
+      </div>
+
+      <div id="tabela-container" class="tabela-container" hidden>
+        <table class="tabela">
+          <thead>
+            <tr>
+              <th scope="col">Título</th>
+              <th scope="col">Descrição</th>
+              <th scope="col">Data Abertura</th>
+              <th scope="col" class="col-acoes">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="corpo-tabela"></tbody>
+        </table>
+      </div>
+    </section>
   </main>
 
+  <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO (começa escondido com "hidden") -->
+  <div id="modal-excluir" class="modal-fundo" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo" aria-describedby="modal-texto">
+      <h3 id="modal-titulo">Excluir chamado?</h3>
+      <p id="modal-texto">
+        O chamado <strong id="modal-nome"></strong> será removido. Essa ação não pode ser desfeita.
+      </p>
+      <div class="acoes">
+        <button id="btn-modal-cancelar" class="btn btn-cancelar" type="button">Cancelar</button>
+        <button id="btn-modal-confirmar" class="btn btn-perigo" type="button">Excluir</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Por enquanto, nenhuma lógica: o botão "Salvar" será implementado nas próximas etapas.
+    // ========================================================
+    // 1. ELEMENTOS DA PÁGINA
+    // ========================================================
+    const btnNovo = document.getElementById('btn-novo');
+
+    const form = document.getElementById('form-chamado');
+    const cartaoForm = document.getElementById('cartao-form');
+    const tituloForm = document.getElementById('titulo-form');
+    const inputTitulo = document.getElementById('titulo');
+    const inputDescricao = document.getElementById('descricao');
+    const aviso = document.getElementById('aviso');
+    const avisoSucesso = document.getElementById('aviso-sucesso');
+    const btnSalvar = document.getElementById('btn-salvar');
+    const btnCancelar = document.getElementById('btn-cancelar');
+
+    const campoTitulo = document.getElementById('campo-titulo');
+    const campoDescricao = document.getElementById('campo-descricao');
+
+    const corpoTabela = document.getElementById('corpo-tabela');
+    const tabelaContainer = document.getElementById('tabela-container');
+    const estadoVazio = document.getElementById('estado-vazio');
+    const contador = document.getElementById('contador');
+
+    const modalExcluir = document.getElementById('modal-excluir');
+    const modalNome = document.getElementById('modal-nome');
+    const btnModalCancelar = document.getElementById('btn-modal-cancelar');
+    const btnModalConfirmar = document.getElementById('btn-modal-confirmar');
+
+    // Guarda o id do chamado que o usuário pediu para excluir (aguardando confirmação)
+    let idParaExcluir = null;
+
+    // Elemento que tinha o foco antes de abrir o modal (para devolver depois)
+    let focoAnterior = null;
+
+    // Os chamados ficam guardados neste array (apenas na memória, por enquanto)
+    const chamados = [];
+
+    // Gera um identificador único para cada chamado
+    let proximoId = 1;
+
+    // Guarda o id do chamado em edição (null = cadastrando um novo)
+    let idEmEdicao = null;
+
+    // Controla o tempo de exibição da mensagem de sucesso
+    let temporizadorSucesso = null;
+
+    // ========================================================
+    // 2. FUNÇÕES AUXILIARES
+    // ========================================================
+
+    // Converte "2026-11-17" em "17/11/2026" (sem usar Date, evitando erros de fuso horário)
+    function formatarData(valor) {
+      if (!valor) return 'Não informada';
+      const [ano, mes, dia] = valor.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    // Data de hoje no formato "aaaa-mm-dd", usando o fuso horário do computador do usuário
+    function dataDeHoje() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    // Aviso de erro: aparece dentro do formulário
+    function mostrarAviso(mensagem) {
+      aviso.textContent = mensagem;
+      aviso.classList.add('visivel');
+    }
+
+    function esconderAviso() {
+      aviso.textContent = '';
+      aviso.classList.remove('visivel');
+    }
+
+    // Aviso de sucesso: aparece acima da tabela e some sozinho depois de alguns segundos
+    function mostrarSucesso(mensagem) {
+      clearTimeout(temporizadorSucesso);
+      avisoSucesso.textContent = mensagem;
+      avisoSucesso.classList.add('visivel');
+      temporizadorSucesso = setTimeout(esconderSucesso, 3000);
+    }
+
+    function esconderSucesso() {
+      clearTimeout(temporizadorSucesso);
+      avisoSucesso.textContent = '';
+      avisoSucesso.classList.remove('visivel');
+    }
+
+    function marcarErro(campo, input, temErro) {
+      campo.classList.toggle('com-erro', temErro);
+      input.setAttribute('aria-invalid', temErro ? 'true' : 'false');
+    }
+
+    function limparErros() {
+      marcarErro(campoTitulo, inputTitulo, false);
+      marcarErro(campoDescricao, inputDescricao, false);
+    }
+
+    // ========================================================
+    // 3. MOSTRAR / OCULTAR O FORMULÁRIO
+    // ========================================================
+
+    // Exibe o formulário (o botão "Novo Chamado" some enquanto ele está aberto)
+    function exibirFormulario() {
+      cartaoForm.hidden = false;
+      btnNovo.hidden = true;
+      limparErros();
+      esconderAviso();
+      esconderSucesso();
+
+      // Leva o usuário até o formulário
+      cartaoForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      inputTitulo.focus({ preventScroll: true });
+    }
+
+    // Abre o formulário vazio para cadastrar um novo chamado
+    function abrirNovoChamado() {
+      idEmEdicao = null;
+      form.reset();
+
+      tituloForm.textContent = 'Novo chamado';
+      btnSalvar.textContent = 'Salvar';
+      cartaoForm.classList.remove('editando');
+
+      renderizarTabela(); // remove destaque de linha em edição, se houver
+      exibirFormulario();
+    }
+
+    // Abre o formulário com os dados do chamado e troca "Salvar" por "Atualizar"
+    function iniciarEdicao(id) {
+      const chamado = chamados.find((c) => c.id === id);
+      if (!chamado) return;
+
+      idEmEdicao = id;
+
+      inputTitulo.value = chamado.titulo;
+      inputDescricao.value = chamado.descricao;
+      // A Data Abertura não é editável: continua a mesma do cadastro
+
+      tituloForm.textContent = 'Editando chamado';
+      btnSalvar.textContent = 'Atualizar';
+      cartaoForm.classList.add('editando');
+
+      renderizarTabela(); // para destacar a linha em edição
+      exibirFormulario();
+    }
+
+    // Oculta e limpa o formulário (após salvar, atualizar ou cancelar)
+    function fecharFormulario() {
+      idEmEdicao = null;
+
+      form.reset();
+      limparErros();
+      esconderAviso();
+
+      cartaoForm.hidden = true;
+      cartaoForm.classList.remove('editando');
+      btnNovo.hidden = false;
+
+      renderizarTabela();
+    }
+
+    btnNovo.addEventListener('click', abrirNovoChamado);
+
+    // Cancelar: fecha o formulário sem salvar nada (tanto na inclusão quanto na edição)
+    btnCancelar.addEventListener('click', () => {
+      fecharFormulario();
+      btnNovo.focus();
+    });
+
+    // ========================================================
+    // 4. DESENHAR A TABELA NA TELA
+    // ========================================================
+    function criarCelula(texto, classe, rotulo) {
+      const td = document.createElement('td');
+      td.className = classe;
+      td.dataset.rotulo = rotulo; // usado no layout de celular
+      td.textContent = texto;     // textContent: seguro contra HTML digitado pelo usuário
+      return td;
+    }
+
+    function renderizarTabela() {
+      corpoTabela.innerHTML = '';
+
+      chamados.forEach((chamado) => {
+        const linha = document.createElement('tr');
+        if (chamado.id === idEmEdicao) linha.classList.add('em-edicao');
+
+        linha.append(
+          criarCelula(chamado.titulo, 'col-titulo', 'Título'),
+          criarCelula(chamado.descricao, 'col-descricao', 'Descrição'),
+          criarCelula(formatarData(chamado.dataAbertura), 'col-data', 'Data Abertura')
+        );
+
+        // Coluna "Ações" com o botão Editar
+        const tdAcoes = document.createElement('td');
+        tdAcoes.className = 'col-acoes';
+
+        const btnEditar = document.createElement('button');
+        btnEditar.type = 'button';
+        btnEditar.className = 'btn btn-editar';
+        btnEditar.textContent = 'Editar';
+        btnEditar.setAttribute('aria-label', `Editar chamado: ${chamado.titulo}`);
+        btnEditar.addEventListener('click', () => iniciarEdicao(chamado.id));
+
+        tdAcoes.appendChild(btnEditar);
+
+        // Botão Excluir (pede confirmação antes de remover)
+        const btnExcluir = document.createElement('button');
+        btnExcluir.type = 'button';
+        btnExcluir.className = 'btn btn-excluir';
+        btnExcluir.textContent = 'Excluir';
+        btnExcluir.setAttribute('aria-label', `Excluir chamado: ${chamado.titulo}`);
+        btnExcluir.addEventListener('click', () => pedirConfirmacaoExclusao(chamado.id));
+
+        tdAcoes.appendChild(btnExcluir);
+        linha.appendChild(tdAcoes);
+        corpoTabela.appendChild(linha);
+      });
+
+      // Estado vazio (mensagem + jogo), tabela e contador
+      const vazia = chamados.length === 0;
+      estadoVazio.hidden = !vazia;
+      tabelaContainer.hidden = vazia;
+      contador.textContent = chamados.length === 1 ? '1 chamado' : `${chamados.length} chamados`;
+
+      // Se apareceu chamado, pausa o jogo; se ficou vazio, desenha a tela inicial do jogo
+      sincronizarJogo(vazia);
+    }
+
+    // ========================================================
+    // 4.1 EXCLUIR (com confirmação)
+    // ========================================================
+
+    // Abre o modal perguntando se o usuário tem certeza
+    function pedirConfirmacaoExclusao(id) {
+      const chamado = chamados.find((c) => c.id === id);
+      if (!chamado) return;
+
+      idParaExcluir = id;
+      modalNome.textContent = `"${chamado.titulo}"`;
+      abrirModal();
+    }
+
+    function abrirModal() {
+      focoAnterior = document.activeElement;
+      modalExcluir.hidden = false;
+      document.body.classList.add('modal-aberto');
+      btnModalCancelar.focus(); // foco na opção segura
+    }
+
+    function fecharModal() {
+      modalExcluir.hidden = true;
+      document.body.classList.remove('modal-aberto');
+      idParaExcluir = null;
+
+      // Devolve o foco para onde o usuário estava (se o elemento ainda existir)
+      if (focoAnterior && document.body.contains(focoAnterior)) {
+        focoAnterior.focus();
+      }
+      focoAnterior = null;
+    }
+
+    // Remove de fato o chamado e atualiza tabela e contador
+    function excluirChamado(id) {
+      const indice = chamados.findIndex((c) => c.id === id);
+      if (indice === -1) return;
+
+      chamados.splice(indice, 1);
+
+      // Se o chamado excluído estava sendo editado, fecha o formulário
+      if (idEmEdicao === id) {
+        fecharFormulario();
+      } else {
+        renderizarTabela();
+      }
+
+      mostrarSucesso('Chamado excluído.');
+    }
+
+    btnModalConfirmar.addEventListener('click', () => {
+      const id = idParaExcluir; // guarda antes de fechar o modal
+      fecharModal();
+      excluirChamado(id);
+    });
+
+    btnModalCancelar.addEventListener('click', fecharModal);
+
+    // Clicar no fundo escuro, fora da janela, também cancela
+    modalExcluir.addEventListener('click', (evento) => {
+      if (evento.target === modalExcluir) fecharModal();
+    });
+
+    // Teclado: Esc cancela; Tab fica "preso" entre os botões do modal
+    document.addEventListener('keydown', (evento) => {
+      if (modalExcluir.hidden) return;
+
+      if (evento.key === 'Escape') {
+        evento.preventDefault();
+        fecharModal();
+      } else if (evento.key === 'Tab') {
+        evento.preventDefault();
+        const proximo = document.activeElement === btnModalCancelar ? btnModalConfirmar : btnModalCancelar;
+        proximo.focus();
+      }
+    });
+
+    // ========================================================
+    // 5. SALVAR / ATUALIZAR
+    // ========================================================
+    form.addEventListener('submit', (evento) => {
+      evento.preventDefault(); // impede o recarregamento da página
+
+      const titulo = inputTitulo.value.trim();
+      const descricao = inputDescricao.value.trim();
+
+      // Validação: Título e Descrição são obrigatórios
+      const faltaTitulo = titulo === '';
+      const faltaDescricao = descricao === '';
+
+      marcarErro(campoTitulo, inputTitulo, faltaTitulo);
+      marcarErro(campoDescricao, inputDescricao, faltaDescricao);
+
+      if (faltaTitulo || faltaDescricao) {
+        if (faltaTitulo && faltaDescricao) {
+          mostrarAviso('Quase lá! Preencha o Título e a Descrição para salvar o chamado.');
+        } else if (faltaTitulo) {
+          mostrarAviso('Quase lá! Falta só o Título do chamado.');
+        } else {
+          mostrarAviso('Quase lá! Falta só a Descrição do chamado.');
+        }
+        // Leva o cursor para o primeiro campo que precisa de atenção
+        (faltaTitulo ? inputTitulo : inputDescricao).focus();
+        return;
+      }
+
+      if (idEmEdicao !== null) {
+        // ATUALIZAR: altera o chamado existente, sem criar um novo
+        // (a Data Abertura original é mantida)
+        const chamado = chamados.find((c) => c.id === idEmEdicao);
+        if (chamado) {
+          chamado.titulo = titulo;
+          chamado.descricao = descricao;
+        }
+        fecharFormulario();
+        mostrarSucesso('Chamado atualizado com sucesso.');
+      } else {
+        // SALVAR: adiciona o novo chamado no topo da tabela,
+        // com a Data Abertura preenchida automaticamente com a data de hoje
+        chamados.unshift({ id: proximoId++, titulo, descricao, dataAbertura: dataDeHoje() });
+        fecharFormulario();
+        mostrarSucesso('Chamado salvo com sucesso.');
+      }
+
+      btnNovo.focus();
+    });
+
+    // Remove o destaque de erro assim que o usuário começa a digitar
+    function aoDigitar() {
+      if (inputTitulo.value.trim()) marcarErro(campoTitulo, inputTitulo, false);
+      if (inputDescricao.value.trim()) marcarErro(campoDescricao, inputDescricao, false);
+
+      const aindaTemErro =
+        campoTitulo.classList.contains('com-erro') || campoDescricao.classList.contains('com-erro');
+      if (!aindaTemErro) esconderAviso();
+    }
+
+    inputTitulo.addEventListener('input', aoDigitar);
+    inputDescricao.addEventListener('input', aoDigitar);
+
+    // ========================================================
+    // 6. JOGO DO ESTUDANTE (estilo dinossauro do navegador)
+    // ========================================================
+    const tela = document.getElementById('jogo');
+    const ctx = tela.getContext && tela.getContext('2d');
+
+    const LARGURA = tela.width;
+    const ALTURA = tela.height;
+    const CHAO_Y = 164; // altura do chão
+
+    const estudante = {
+      x: 56,
+      largura: 28,
+      altura: 42,
+      y: CHAO_Y - 42,
+      velY: 0,
+      noChao: true,
+    };
+
+    let estadoJogo = 'pronto'; // 'pronto' | 'jogando' | 'fim'
+    let obstaculos = [];
+    let distanciaAteProximo = 220;
+    let velocidade = 5;
+    let pontos = 0;
+    let recorde = 0;
+    let quadro = 0;
+    let animacaoId = null;
+
+    // Cria um obstáculo: uma pilha de livros ou uma prova difícil
+    function novoObstaculo() {
+      if (Math.random() < 0.55) {
+        const qtd = Math.random() < 0.5 ? 2 : 3; // 2 ou 3 livros empilhados
+        const altura = qtd * 11;
+        return {
+          tipo: 'livros',
+          qtd,
+          x: LARGURA + 10,
+          y: CHAO_Y - altura,
+          largura: 34,
+          altura,
+        };
+      }
+      return {
+        tipo: 'prova',
+        x: LARGURA + 10,
+        y: CHAO_Y - 38,
+        largura: 28,
+        altura: 38,
+      };
+    }
+
+    // Estudante com boné e mochila nas costas
+    function desenharEstudante() {
+      const { x, y } = estudante;
+      const passo = estadoJogo === 'jogando' && estudante.noChao ? Math.floor(quadro / 6) % 2 : 0;
+
+      // Mochila
+      ctx.fillStyle = '#c84b31';
+      ctx.fillRect(x, y + 14, 7, 16);
+
+      // Corpo (camiseta azul)
+      ctx.fillStyle = '#1e66b8';
+      ctx.fillRect(x + 7, y + 13, 14, 17);
+
+      // Cabeça
+      ctx.fillStyle = '#f2c6a0';
+      ctx.fillRect(x + 8, y + 3, 12, 10);
+
+      // Boné
+      ctx.fillStyle = '#1f2a37';
+      ctx.fillRect(x + 7, y, 14, 4);
+      ctx.fillRect(x + 17, y + 2, 7, 2); // aba
+
+      // Olho (vira um "X" quando bate num obstáculo)
+      ctx.fillStyle = '#1f2a37';
+      if (estadoJogo === 'fim') {
+        ctx.fillRect(x + 16, y + 5, 3, 3);
+      } else {
+        ctx.fillRect(x + 17, y + 6, 2, 2);
+      }
+
+      // Pernas alternando para dar efeito de corrida
+      ctx.fillStyle = '#1f2a37';
+      const pernaEsq = passo === 0 ? 12 : 7;
+      const pernaDir = passo === 0 ? 7 : 12;
+      ctx.fillRect(x + 8, y + 30, 5, estudante.noChao ? pernaEsq : 8);
+      ctx.fillRect(x + 15, y + 30, 5, estudante.noChao ? pernaDir : 10);
+    }
+
+    // Pilha de livros ou folha de prova
+    function desenharObstaculo(o) {
+      if (o.tipo === 'livros') {
+        const cores = ['#c84b31', '#2a7f62', '#7a4ba3'];
+        for (let i = 0; i < o.qtd; i++) {
+          const ly = CHAO_Y - (i + 1) * 11;
+          ctx.fillStyle = cores[i % cores.length];
+          ctx.fillRect(o.x, ly, o.largura, 10);
+          ctx.fillStyle = '#fff8e7'; // páginas do livro
+          ctx.fillRect(o.x + 3, ly + 2, o.largura - 6, 3);
+        }
+      } else {
+        // Folha da prova
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(o.x, o.y, o.largura, o.altura);
+        ctx.strokeStyle = '#64748b';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(o.x, o.y, o.largura, o.altura);
+
+        // Nota vermelha no topo
+        ctx.fillStyle = '#c8372d';
+        ctx.font = 'bold 10px sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('PROVA', o.x + 2, o.y + 10);
+
+        // Linhas simulando as questões
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillRect(o.x + 4, o.y + 15, o.largura - 8, 2);
+        ctx.fillRect(o.x + 4, o.y + 21, o.largura - 8, 2);
+        ctx.fillRect(o.x + 4, o.y + 27, o.largura - 12, 2);
+      }
+    }
+
+    function desenharJogo() {
+      if (!ctx) return;
+
+      ctx.clearRect(0, 0, LARGURA, ALTURA);
+
+      // Linha do chão + pedrinhas passando
+      ctx.strokeStyle = '#cbd5e1';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(0, CHAO_Y);
+      ctx.lineTo(LARGURA, CHAO_Y);
+      ctx.stroke();
+
+      ctx.fillStyle = '#cbd5e1';
+      for (let i = 0; i < 18; i++) {
+        const px = ((i * 46 - Math.floor(pontos * 6)) % LARGURA + LARGURA) % LARGURA;
+        ctx.fillRect(px, CHAO_Y + 6 + (i % 3) * 4, 6, 2);
+      }
+
+      obstaculos.forEach(desenharObstaculo);
+      desenharEstudante();
+
+      // Placar no canto superior direito
+      ctx.fillStyle = '#475569';
+      ctx.font = '600 13px system-ui, sans-serif';
+      ctx.textAlign = 'right';
+      const pts = String(Math.floor(pontos)).padStart(4, '0');
+      const rec = recorde > 0 ? `RECORDE ${String(recorde).padStart(4, '0')}   ` : '';
+      ctx.fillText(`${rec}PONTOS ${pts}`, LARGURA - 14, 24);
+
+      // Mensagens de início e de fim de jogo
+      if (estadoJogo === 'pronto') {
+        ctx.fillStyle = '#334155';
+        ctx.font = '600 15px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Aperte Espaço ou clique aqui para correr!', LARGURA / 2, 78);
+      } else if (estadoJogo === 'fim') {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.82)';
+        ctx.fillRect(LARGURA / 2 - 175, 42, 350, 66);
+
+        ctx.fillStyle = '#1e293b';
+        ctx.font = '700 16px system-ui, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Fim de jogo! A prova te pegou.', LARGURA / 2, 68);
+
+        ctx.fillStyle = '#475569';
+        ctx.font = '13px system-ui, sans-serif';
+        ctx.fillText('Aperte Espaço ou clique para tentar de novo', LARGURA / 2, 92);
+      }
+    }
+
+    function reiniciarJogo() {
+      estudante.y = CHAO_Y - estudante.altura;
+      estudante.velY = 0;
+      estudante.noChao = true;
+      obstaculos = [];
+      distanciaAteProximo = 180;
+      velocidade = 5.2;
+      pontos = 0;
+      quadro = 0;
+    }
+
+    function atualizarJogo() {
+      quadro++;
+      pontos += 0.15;
+      velocidade = Math.min(10, 5.2 + pontos * 0.01);
+
+      // Gravidade e pulo
+      estudante.velY += 0.65;
+      estudante.y += estudante.velY;
+
+      if (estudante.y >= CHAO_Y - estudante.altura) {
+        estudante.y = CHAO_Y - estudante.altura;
+        estudante.velY = 0;
+        estudante.noChao = true;
+      }
+
+      // Geração de novos obstáculos
+      distanciaAteProximo -= velocidade;
+      if (distanciaAteProximo <= 0) {
+        obstaculos.push(novoObstaculo());
+        distanciaAteProximo = 210 + Math.random() * 190;
+      }
+
+      // Movimento dos obstáculos
+      obstaculos.forEach((o) => { o.x -= velocidade; });
+      obstaculos = obstaculos.filter((o) => o.x + o.largura > -10);
+
+      // Colisão (com uma pequena folga para não parecer injusto)
+      const ex = estudante.x + 5;
+      const ey = estudante.y + 4;
+      const el = estudante.largura - 10;
+      const ea = estudante.altura - 6;
+
+      for (const o of obstaculos) {
+        const bateu =
+          ex < o.x + o.largura - 3 &&
+          ex + el > o.x + 3 &&
+          ey < o.y + o.altura &&
+          ey + ea > o.y + 3;
+
+        if (bateu) {
+          estadoJogo = 'fim';
+          recorde = Math.max(recorde, Math.floor(pontos));
+          desenharJogo();
+          return;
+        }
+      }
+
+      desenharJogo();
+      animacaoId = requestAnimationFrame(atualizarJogo);
+    }
+
+    function acaoPular() {
+      if (estadoJogo === 'jogando') {
+        if (estudante.noChao) {
+          estudante.velY = -11.8;
+          estudante.noChao = false;
+        }
+      } else {
+        cancelAnimationFrame(animacaoId);
+        reiniciarJogo();
+        estadoJogo = 'jogando';
+        estudante.velY = -11.8;
+        estudante.noChao = false;
+        animacaoId = requestAnimationFrame(atualizarJogo);
+      }
+    }
+
+    // Liga ou pausa o jogo conforme a lista esteja vazia ou não
+    function sincronizarJogo(listaEstaVazia) {
+      if (!ctx) return;
+
+      if (!listaEstaVazia) {
+        cancelAnimationFrame(animacaoId);
+        if (estadoJogo === 'jogando') estadoJogo = 'pronto';
+      } else if (estadoJogo !== 'jogando') {
+        desenharJogo();
+      }
+    }
+
+    tela.addEventListener('pointerdown', (evento) => {
+      evento.preventDefault();
+      acaoPular();
+    });
+
+    document.addEventListener('keydown', (evento) => {
+      // Só pula se o jogo estiver visível e o usuário não estiver digitando no formulário
+      if (estadoVazio.hidden || !modalExcluir.hidden) return;
+      const tag = document.activeElement ? document.activeElement.tagName : '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'BUTTON') return;
+
+      if (evento.code === 'Space' || evento.code === 'ArrowUp') {
+        evento.preventDefault();
+        acaoPular();
+      }
+    });
+
+    // Estado inicial
+    renderizarTabela();
   </script>
 </body>
 </html>
