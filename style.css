@@ -1,0 +1,285 @@
+/* ==========================================================================
+   1. VARIÁVEIS DE CORES (Tema Claro por padrão + Tema Escuro)
+   Guardamos as cores em variáveis (--nome) para reaproveitar no arquivo todo.
+   ========================================================================== */
+:root {
+  --cor-fundo: #f8fafc;
+  --cor-cartao: #ffffff;
+  --cor-texto: #0f172a;
+  --cor-texto-suave: #64748b;
+  --cor-borda: #e2e8f0;
+  --cor-primaria: #4f46e5;
+  --cor-primaria-hover: #4338ca;
+  --cor-sucesso: #10b981;
+  --cor-perigo: #ef4444;
+  --sombra: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+/* Quando o <body> ganha a classe "modo-escuro", só trocamos os valores! */
+body.modo-escuro {
+  --cor-fundo: #0f172a;
+  --cor-cartao: #1e293b;
+  --cor-texto: #f1f5f9;
+  --cor-texto-suave: #94a3b8;
+  --cor-borda: #334155;
+  --cor-primaria: #6366f1;
+  --cor-primaria-hover: #818cf8;
+  --sombra: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* ==========================================================================
+   2. RESET E ESTILO BASE DA PÁGINA
+   ========================================================================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  line-height: 1.5;
+  padding: 32px 16px;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Centraliza o Planner na tela com largura máxima de 960px */
+.planner-container {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ==========================================================================
+   3. CABEÇALHO DO PLANNER
+   ========================================================================== */
+.planner-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  background-color: var(--cor-cartao);
+  padding: 20px 24px;
+  border-radius: 14px;
+  border: 1px solid var(--cor-borda);
+  box-shadow: var(--sombra);
+}
+
+.data-hoje {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--cor-primaria);
+  margin-bottom: 2px;
+}
+
+.planner-header h1 {
+  font-size: 1.5rem;
+}
+
+.subtitulo {
+  color: var(--cor-texto-suave);
+  font-size: 0.9rem;
+}
+
+.acoes-topo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   4. PAINEL DO TOPO (Foco do Dia + Barra de Progresso)
+   ========================================================================== */
+.painel-topo {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+}
+
+.bloco-foco,
+.bloco-progresso {
+  background-color: var(--cor-cartao);
+  padding: 18px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--cor-borda);
+  box-shadow: var(--sombra);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 8px;
+}
+
+.bloco-foco label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.progresso-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.barra-fundo {
+  width: 100%;
+  height: 12px;
+  background-color: var(--cor-borda);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.barra-preenchimento {
+  width: 0%;
+  height: 100%;
+  background-color: var(--cor-sucesso);
+  transition: width 0.3s ease;
+}
+
+/* ==========================================================================
+   5. FORMULÁRIO DE NOVA TAREFA E BOTÕES
+   ========================================================================== */
+.nova-tarefa-box {
+  display: flex;
+  gap: 10px;
+  background-color: var(--cor-cartao);
+  padding: 16px 20px;
+  border-radius: 14px;
+  border: 1px solid var(--cor-borda);
+  box-shadow: var(--sombra);
+}
+
+input[type="text"],
+select {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--cor-borda);
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+input[type="text"]:focus,
+select:focus {
+  border-color: var(--cor-primaria);
+}
+
+#input-tarefa {
+  flex: 1;
+}
+
+button {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+.btn-primario {
+  background-color: var(--cor-primaria);
+  color: #ffffff;
+}
+
+.btn-primario:hover {
+  background-color: var(--cor-primaria-hover);
+}
+
+.btn-secundario {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  border: 1px solid var(--cor-borda);
+}
+
+.btn-secundario:hover {
+  border-color: var(--cor-primaria);
+}
+
+/* ==========================================================================
+   6. GRADE DOS 3 PERÍODOS (Manhã, Tarde, Noite)
+   ========================================================================== */
+.grade-periodos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.coluna-periodo {
+  background-color: var(--cor-cartao);
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid var(--cor-borda);
+  box-shadow: var(--sombra);
+  min-height: 240px;
+}
+
+.coluna-periodo h2 {
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--cor-borda);
+}
+
+.lista-tarefas {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-tarefa {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: var(--cor-fundo);
+  border: 1px solid var(--cor-borda);
+  font-size: 0.92rem;
+}
+
+.item-tarefa label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.item-tarefa.concluida span {
+  text-decoration: line-through;
+  color: var(--cor-texto-suave);
+}
+
+.btn-remover {
+  background: transparent;
+  color: var(--cor-texto-suave);
+  padding: 4px 8px;
+  font-size: 0.8rem;
+}
+
+.btn-remover:hover {
+  color: var(--cor-perigo);
+}
+
+@media (max-width: 720px) {
+  .painel-topo,
+  .grade-periodos {
+    grid-template-columns: 1fr;
+  }
+  .nova-tarefa-box {
+    flex-direction: column;
+  }
+}

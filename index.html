@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Planner Diário interativo organizado por períodos do dia (Manhã, Tarde e Noite) com barra de progresso e salvamento automático." />
+  <title>Meu Planner Diário</title>
+
+  <!-- Conexão com o arquivo de estilos (CSS) -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Container principal que centraliza o Planner na tela -->
+  <main class="planner-container">
+
+    <!-- 1. CABEÇALHO: Data de hoje, Título do Planner e botões de ação -->
+    <header class="planner-header">
+      <div>
+        <span id="data-hoje" class="data-hoje">Carregando data...</span>
+        <h1>📅 Meu Planner Diário</h1>
+        <p class="subtitulo">Organize sua rotina por períodos do dia</p>
+      </div>
+      <div class="acoes-topo">
+        <button id="btn-limpar" class="btn-secundario" type="button" title="Remove todas as tarefas já marcadas como concluídas">
+          🧹 Limpar Concluídas
+        </button>
+        <button id="btn-tema" class="btn-secundario" type="button">
+          🌙 Modo Escuro
+        </button>
+      </div>
+    </header>
+
+    <!-- 2. FOCO DO DIA E BARRA DE PROGRESSO -->
+    <section class="painel-topo">
+      <!-- Campo para digitar a meta principal do dia -->
+      <div class="bloco-foco">
+        <label for="foco-dia">🎯 Foco Principal de Hoje:</label>
+        <input
+          id="foco-dia"
+          type="text"
+          placeholder="Ex: Entregar o relatório ou estudar 1h de programação..."
+        />
+      </div>
+
+      <!-- Barra que mostra a porcentagem de tarefas concluídas -->
+      <div class="bloco-progresso">
+        <div class="progresso-cabecalho">
+          <span>Progresso do dia</span>
+          <strong id="texto-progresso">0% (0/0)</strong>
+        </div>
+        <div class="barra-fundo">
+          <div id="barra-preenchimento" class="barra-preenchimento"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. FORMULÁRIO PARA ADICIONAR NOVA TAREFA -->
+    <section class="nova-tarefa-box">
+      <input
+        id="input-tarefa"
+        type="text"
+        placeholder="Digite uma nova tarefa..."
+      />
+
+      <select id="select-periodo" aria-label="Período do dia">
+        <option value="manha">☀️ Manhã</option>
+        <option value="tarde">🌤️ Tarde</option>
+        <option value="noite">🌙 Noite</option>
+      </select>
+
+      <button id="btn-adicionar" class="btn-primario" type="button">
+        + Adicionar
+      </button>
+    </section>
+
+    <!-- 4. COLUNAS DOS PERÍODOS (Manhã, Tarde e Noite) -->
+    <section class="grade-periodos">
+      <!-- Coluna da Manhã -->
+      <div class="coluna-periodo">
+        <h2>☀️ Manhã</h2>
+        <ul id="lista-manha" class="lista-tarefas"></ul>
+      </div>
+
+      <!-- Coluna da Tarde -->
+      <div class="coluna-periodo">
+        <h2>🌤️ Tarde</h2>
+        <ul id="lista-tarde" class="lista-tarefas"></ul>
+      </div>
+
+      <!-- Coluna da Noite -->
+      <div class="coluna-periodo">
+        <h2>🌙 Noite</h2>
+        <ul id="lista-noite" class="lista-tarefas"></ul>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Conexão com o arquivo de lógica (JavaScript) -->
+  <script src="script.js"></script>
+</body>
+</html>
